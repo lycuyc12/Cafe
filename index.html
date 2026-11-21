@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
+<html lang="ru"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Кафе</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;600&family=Nunito:wght@400;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+<title>San Crema</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;600&amp;family=Nunito:wght@400;700&amp;family=Cinzel:wght@500;600&amp;display=swap" rel="stylesheet">
 <style id="base">
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 *{box-sizing:border-box}
@@ -53,11 +52,11 @@ body.outline .row,body.outline .tile{background:transparent;box-shadow:none}
 #qr svg{width:150px;height:150px}
 </style>
 <style id="theme"></style>
-<script id="cfg" type="application/json">{"logo": "sc", "img": "", "ssid": "Eskere", "pass": "Eskere", "google": "www.tiktok.com/@luciusworkout", "yandex": "www.tiktok.com/@luciusworkout", "gis": "", "tips": "", "v": 1, "i18n": {"ru": {"name": "Le jardin", "tag": "coffee · bakery", "promo": "", "hours": "", "menu": "Kofe - 5 mamat\nFuse tea - 3 manat"}, "az": {"name": "", "tag": "", "promo": "", "hours": "", "menu": ""}, "en": {"name": "", "tag": "", "promo": "", "hours": "", "menu": ""}}, "soc": {"telegram": "www.tiktok.com/@luciusworkout", "vk": "", "instagram": "www.tiktok.com/@luciusworkout", "whatsapp": "www.tiktok.com/@luciusworkout", "tiktok": "www.tiktok.com/@luciusworkout", "web": "", "phone": "", "map": ""}, "th": {"preset": "sancrema", "bg": "#fbe8cc", "card": "#fff6e8", "text": "#3b2314", "accent": "#3b2314", "font": "cap", "radius": 6, "btn": "outline", "deco": "glow"}, "pin": "0000"}</script>
-</head>
+<script id="cfg" type="application/json">{"server":"","gh":{"repo":"","branch":"main"},"logo":"sc","img":"","ssid":"Eskere","pass":"Eskere","google":"www.tiktok.com/@luciusworkout","yandex":"www.tiktok.com/@luciusworkout","gis":"","tips":"","v":1795291767887,"i18n":{"ru":{"name":"San Crema","tag":"coffee · bakery","promo":"","hours":"","menu":"Kofe - 5 mamat\nFuse tea - 3 manat"},"az":{"name":"","tag":"","promo":"","hours":"","menu":""},"en":{"name":"","tag":"","promo":"","hours":"","menu":""}},"soc":{"telegram":"www.tiktok.com/@luciusworkout","vk":"","instagram":"www.tiktok.com/@luciusworkout","whatsapp":"www.tiktok.com/@luciusworkout","tiktok":"www.tiktok.com/@luciusworkout","web":"","phone":"","map":""},"th":{"preset":"sancrema","bg":"#fbe8cc","card":"#fff6e8","text":"#3b2314","accent":"#3b2314","font":"cap","radius":6,"btn":"outline","deco":"glow"},"pin":"0000"}</script>
+<style>artifact-sync,artifact-local{display:contents}</style></head>
 <body>
 <div id="app"></div>
-<div id="toast"></div>
+<div id="toast" style="display: none;"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 const FONTS={serif:"'Cormorant Garamond',Georgia,serif",sans:"'Manrope',system-ui,sans-serif",round:"'Nunito',system-ui,sans-serif",cap:"'Cinzel',Georgia,serif"};
@@ -188,10 +187,10 @@ const ghtk=()=>{try{return localStorage.getItem('cafe-gh')||''}catch(e){return''
 async function ghPush(){const g=S.gh,tk=ghtk(),p='config.json',b=g.branch||'main';
  const d=JSON.parse(JSON.stringify(S));delete d.pin;delete d.server;delete d.gh;
  const api=`https://api.github.com/repos/${g.repo}/contents/${p}`,h={Authorization:'Bearer '+tk,Accept:'application/vnd.github+json'};
- try{toast('Сохраняю на GitHub…');let sha;const r0=await fetch(api+'?ref='+encodeURIComponent(b),{headers:h});if(r0.ok)sha=(await r0.json()).sha;
+ try{toast('Сохраняю на GitHub…');let sha;const gs=async()=>{const r0=await fetch(api+'?ref='+encodeURIComponent(b)+'&t='+Date.now(),{headers:h,cache:'no-store'});return r0.ok?(await r0.json()).sha:undefined};sha=await gs();
  const body={message:'Update cafe settings',content:btoa(unescape(encodeURIComponent(JSON.stringify(d)))),branch:b};if(sha)body.sha=sha;
- const r=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)});
- toast(r.ok?'Сохранено на GitHub. Страница обновится примерно через минуту':'Ошибка GitHub '+r.status+': проверьте репозиторий и токен')}catch(e){toast('GitHub недоступен')}}
+ let r=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)});if(r.status===409||r.status===422){const s2=await gs();if(s2)body.sha=s2;r=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)})}
+ toast(r.ok?'Сохранено на GitHub. Страница обновится примерно через минуту':'Ошибка GitHub '+r.status+': '+((await r.json().catch(()=>({}))).message||'проверьте репозиторий и токен'))}catch(e){toast('GitHub недоступен')}}
 async function push(){const d=JSON.parse(JSON.stringify(S));delete d.pin;delete d.server;d.v=Date.now();
  try{const r=await fetch(S.server,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({pin:authPin,data:d})});const j=await r.json();toast(j.ok?'Сохранено на сервере. Увидят все':'Неверный PIN сервера')}catch(e){toast('Сервер недоступен')}}
 async function pull(){const u=S.server?S.server+(S.server.includes('?')?'&':'?')+'t='+Date.now():'config.json?t='+Date.now();
@@ -203,5 +202,6 @@ $('#sh').onclick=e=>{if(e.target.id==='sh')close()};$('#wm').onclick=e=>{if(e.ta
 addEventListener('hashchange',()=>{if(location.hash==='#admin')openPanel()});
 render();pull();if(location.hash==='#admin')openPanel();
 </script>
-</body>
-</html>
+
+
+</body></html>
